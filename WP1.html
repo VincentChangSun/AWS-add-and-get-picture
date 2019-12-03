@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<link rel="icon" href="favicon.ico">
+    <title>Input Infomation</title>
+    <link href="http://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="WP1.css" rel="stylesheet">
+<!--     <link href="speach-input.css" rel="stylesheet">
+    <script type="text/javascript" src="speach-input.js"></script> -->
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apiGateway-js-sdk/apigClient.js"></script>
+    <script type="text/javascript">
+      function handleClick() {
+        var label = document.getElementById('label');
+        var address="https://visitor-photo-bucket.s3.amazonaws.com/WangSicong.jpg";
+        // document.getElementById('imgInit').src = address
+        var picList = ["https://visitor-photo-bucket.s3.amazonaws.com/WangSicong.jpg", "https://visitor-photo-bucket.s3.amazonaws.com/ChangSun.jpg", "https://visitor-photo-bucket.s3.amazonaws.com/ChangSun2.jpg"];
+        var n = picList.length;
+        var inputForm = document.getElementById('inputForm');
+        for (var i = 0; i < n; i++) {
+          var imgNode = document.createElement('img');
+          // inputForm.appendChild(imgNode);
+          imgNode.src = picList.pop();
+          imgNode.width = 400;
+          // imgNode.height = ((imgNode.height * 400) / imgNode.width);
+          inputForm.insertBefore(imgNode, label);
+        }
+        const inputMessage = document.getElementById("inputMessage").value;
+        const flag = "search";
+        const apigClient = apigClientFactory.newClient();
+        apigClient.rootPost(null, {picture: inputMessage, filename: flag})
+            .then(response => {
+              alert("Success!");
+            })
+            .catch(error => {
+              alert("Failed!");
+            });
+        document.getElementById("inputMessage").value = "";
+        // const inputPicture = document.getElementById('picture').value;
+        // const fileName = document.getElementById('picture').files[0].name;
+        // const apigClient2 = apigClientFactory.newClient();
+        // apigClient2.rootPost(null, {picture: inputPicture, filename: fileName})
+        //     .then(response => {
+        //       alert("Success!");
+        //     })
+        //     .catch(error => {
+        //       alert("Failed!");
+        //     });
+        // document.getElementById("picture").value = "";
+      }
+    </script> 
+    <script type="text/javascript">
+      function submitPic() {
+        // const inputPicture = document.getElementById('picture').value;
+
+        const inputPicture = document.getElementById('picture').files;
+
+        if (inputPicture.length > 0) {
+          var fileToLoad = inputPicture[0];
+
+          var fileReader = new FileReader();
+
+          fileReader.onload = function(fileLoadedEvent) {
+            var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+            var newImage = document.createElement('img');
+            newImage.src = srcData;
+
+            // document.getElementById("imgTest").innerHTML = newImage.outerHTML;
+            // alert("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
+            const base64 = newImage.outerHTML;
+            const fileName = fileToLoad.name;
+            const apigClient2 = apigClientFactory.newClient();
+            apigClient2.rootPost(null, {picture: base64, filename: fileName})
+                .then(response => {
+                  alert("Success!");
+                })
+                .catch(error => {
+                  alert("Failed!");
+                });
+            // alert("Converted Base64 version is " + srcData);
+            // base64 = newImage;
+            // console.log("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
+          }
+          fileReader.readAsDataURL(fileToLoad);
+        }
+        // const base64 = btoa(inputPicture);
+        // const base64 = ""
+        
+        document.getElementById("picture").value = "";
+      }
+    </script>
+  </head>
+
+  <body class="text-center">
+    <form id = "inputPicture" class = "form-infomation" onsubmit = "submitPic()">
+      <input type="file" name="file" id="picture" />
+<!--       <div id="imgTest"></div> -->
+      <button class="btn btn-lg btn-primary btn-block" id = "add" type="submit">add</button>
+    </form>
+    <form id="inputForm" class="form-infomation" onsubmit="handleClick()" >
+      <!-- handleClick() -->
+	    <!-- <img class="mb-4" alt="" width="200" height="200" id = "imgInit"> -->
+      <!-- <script language="javascript">
+        var address="2.jpg";
+        document.getElementById('imgInit').src = address;
+      </script> -->
+      <!-- <h2 class="h3 mb-3 font-weight-normal">Input Message</h2> -->
+      <label for="inputMessage" id="label" class="sr-only">Messages</label>
+      <input style="message" type="text" class="form-control speech-input" name="messgae" id="inputMessage" placeholder="search" required autofocus />
+      <!-- required autofocus -->
+      <!-- <input type="file" accept="audio/*" capture="microphone" id="recorder">
+      <audio id="player" controls></audio>
+      <script> 
+        const recorder = document.getElementById('recorder');
+        // navigator.mediaDevices.getUserMedia({ audio: true })
+        // .then(stream => {
+        //   const mediaRecorder = new MediaRecorder(stream);
+        //   mediaRecorder.start();
+
+        //   const audioChunks = [];
+        //   mediaRecorder.addEventListener("dataavailable", event => {
+        //     audioChunks.push(event.data);
+        //   });
+
+        //   mediaRecorder.addEventListener("stop", () => {
+        //     const audioBlob = new Blob(audioChunks);
+        //     const audioUrl = URL.createObjectURL(audioBlob);
+        //   });
+
+        //   setTimeout(() => {
+        //     mediaRecorder.stop();
+        //   }, 3000);
+        // });
+        const recordAudio = () =>
+          new Promise(async resolve => {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mediaRecorder = new MediaRecorder(stream);
+            const audioChunks = [];
+
+            mediaRecorder.addEventListener("dataavailable", event => {
+              audioChunks.push(event.data);
+            });
+
+            const start = () => mediaRecorder.start();
+
+            const stop = () =>
+              new Promise(resolve => {
+                mediaRecorder.addEventListener("stop", () => {
+                  const audioBlob = new Blob(audioChunks);
+                  const audioUrl = URL.createObjectURL(audioBlob);
+                  const audio = new Audio(audioUrl);
+                  const play = () => audio.play();
+                  resolve({ audioBlob, audioUrl, play });
+                });
+
+                mediaRecorder.stop();
+              });
+
+            resolve({ start, stop });
+          });
+
+        const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+
+        (async () => {
+          const recorder = await recordAudio();
+          recorder.start();
+          await sleep(3000);
+          const audio = await recorder.stop();
+          audio.play();
+        })();
+      </script> -->
+      <!-- <script>
+        var recorder = document.getElementById('recorder');
+        var player = document.getElementById('player');
+
+        recorder.addEventListener('change', function(e) {
+          var file = e.target.files[0]; 
+          // Do something with the audio file.
+          player.src =  URL.createObjectURL(file);
+        });
+      </script> -->
+<!--       <input style="message" type="text" class="form-control speech-input" name="messgae" id="inputMessage" placeholder="search" data-ready="Habla ahora" data-buttonsize="20" data-instant-submit required autofocus> -->
+      <!--  lang="zh-CN" -->
+      <button class="btn btn-lg btn-primary btn-block" id = "submit" type="submit">search</button>
+    </form>
+<!--     <form class = "back" id = "deny" onsubmit="denyClick()">
+      <button class="btn btn-danger btn-primary btn-lg" id = "deny" type="submit">Deny</button>
+    </form> -->
+    <script>
+      const form = document.getElementById('inputForm');
+      form.addEventListener('submit', logSubmit);
+
+      function logSubmit(event) {
+        event.preventDefault();
+      }
+    </script>
+    <script>
+      const pic = document.getElementById('inputPicture');
+      pic.addEventListener('submit', logSubmit);
+
+      function logSubmit(event) {
+        event.preventDefault();
+      }
+    </script>
+<!--     <script>
+      const denyForm = document.getElementById('deny');
+      denyForm.addEventListener('submit', logSubmit);
+
+      function logSubmit(event) {
+        event.preventDefault();
+      }
+    </script> -->
+<!--     <form role="form" class="copy-right"> -->
+        <p class="mt-5 mb-3 text-muted">&copy; Cloud Computing</p>
+<!--     </form> -->
+  </body>
+</html>
