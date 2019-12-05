@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-	<link rel="icon" href="favicon.ico">
-    <title>Input Infomation</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Search</title>
     <link href="http://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="WP1.css" rel="stylesheet">
-<!--     <link href="speach-input.css" rel="stylesheet">
-    <script type="text/javascript" src="speach-input.js"></script> -->
     <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
     <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
     <script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/sha256.js"></script>
@@ -22,6 +20,8 @@
     <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
     <script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
     <script type="text/javascript" src="apiGateway-js-sdk/apigClient.js"></script>
+    
+    
     <script type="text/javascript">
       function handleClick() {
         var label = document.getElementById('label');
@@ -32,13 +32,11 @@
         var inputForm = document.getElementById('inputForm');
         for (var i = 0; i < n; i++) {
           var imgNode = document.createElement('img');
-          // inputForm.appendChild(imgNode);
           imgNode.src = picList.pop();
           imgNode.width = 400;
-          // imgNode.height = ((imgNode.height * 400) / imgNode.width);
           inputForm.insertBefore(imgNode, label);
         }
-        const inputMessage = document.getElementById("inputMessage").value;
+        var inputMessage = document.getElementById("inputMessage").value;
         const flag = "search";
         const apigClient = apigClientFactory.newClient();
         apigClient.rootPost(null, {picture: inputMessage, filename: flag})
@@ -49,22 +47,10 @@
               alert("Failed!");
             });
         document.getElementById("inputMessage").value = "";
-        // const inputPicture = document.getElementById('picture').value;
-        // const fileName = document.getElementById('picture').files[0].name;
-        // const apigClient2 = apigClientFactory.newClient();
-        // apigClient2.rootPost(null, {picture: inputPicture, filename: fileName})
-        //     .then(response => {
-        //       alert("Success!");
-        //     })
-        //     .catch(error => {
-        //       alert("Failed!");
-        //     });
-        // document.getElementById("picture").value = "";
       }
     </script> 
     <script type="text/javascript">
       function submitPic() {
-        // const inputPicture = document.getElementById('picture').value;
 
         const inputPicture = document.getElementById('picture').files;
 
@@ -74,13 +60,11 @@
           var fileReader = new FileReader();
 
           fileReader.onload = function(fileLoadedEvent) {
-            var srcData = fileLoadedEvent.target.result; // <--- data: base64
+            var srcData = fileLoadedEvent.target.result; 
 
             var newImage = document.createElement('img');
             newImage.src = srcData;
 
-            // document.getElementById("imgTest").innerHTML = newImage.outerHTML;
-            // alert("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
             const base64 = newImage.outerHTML;
             const fileName = fileToLoad.name;
             const apigClient2 = apigClientFactory.newClient();
@@ -91,14 +75,10 @@
                 .catch(error => {
                   alert("Failed!");
                 });
-            // alert("Converted Base64 version is " + srcData);
-            // base64 = newImage;
-            // console.log("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
+
           }
           fileReader.readAsDataURL(fileToLoad);
         }
-        // const base64 = btoa(inputPicture);
-        // const base64 = ""
         
         document.getElementById("picture").value = "";
       }
@@ -108,98 +88,31 @@
   <body class="text-center">
     <form id = "inputPicture" class = "form-infomation" onsubmit = "submitPic()">
       <input type="file" name="file" id="picture" />
-<!--       <div id="imgTest"></div> -->
-      <button class="btn btn-lg btn-primary btn-block" id = "add" type="submit">add</button>
+      <button class="btn btn-lg btn-primary btn-block" id = "add" type="add">add</button>
     </form>
-    <form id="inputForm" class="form-infomation" onsubmit="handleClick()" >
-      <!-- handleClick() -->
-	    <!-- <img class="mb-4" alt="" width="200" height="200" id = "imgInit"> -->
-      <!-- <script language="javascript">
-        var address="2.jpg";
-        document.getElementById('imgInit').src = address;
-      </script> -->
-      <!-- <h2 class="h3 mb-3 font-weight-normal">Input Message</h2> -->
-      <label for="inputMessage" id="label" class="sr-only">Messages</label>
-      <input style="message" type="text" class="form-control speech-input" name="messgae" id="inputMessage" placeholder="search" required autofocus />
-      <!-- required autofocus -->
-      <!-- <input type="file" accept="audio/*" capture="microphone" id="recorder">
-      <audio id="player" controls></audio>
-      <script> 
-        const recorder = document.getElementById('recorder');
-        // navigator.mediaDevices.getUserMedia({ audio: true })
-        // .then(stream => {
-        //   const mediaRecorder = new MediaRecorder(stream);
-        //   mediaRecorder.start();
 
-        //   const audioChunks = [];
-        //   mediaRecorder.addEventListener("dataavailable", event => {
-        //     audioChunks.push(event.data);
-        //   });
+    <form id="inputForm" class="form-infomation" onsubmit="handleClick()">
 
-        //   mediaRecorder.addEventListener("stop", () => {
-        //     const audioBlob = new Blob(audioChunks);
-        //     const audioUrl = URL.createObjectURL(audioBlob);
-        //   });
+        <fieldset>
+            <input type="text" class="speech-input" placeholder="Search me..." name="messgae" id="inputMessage"/>
 
-        //   setTimeout(() => {
-        //     mediaRecorder.stop();
-        //   }, 3000);
-        // });
-        const recordAudio = () =>
-          new Promise(async resolve => {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const mediaRecorder = new MediaRecorder(stream);
-            const audioChunks = [];
+            <span id="start-record-btn" class = "ON" onclick = "toggleVoice(this)">
+                <svg width="20px" height="px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 58 58" style="enable-background:new 0 0 58 58;" xml:space="preserve">
+                    <g>
+                        <path d="M44,28c-0.552,0-1,0.447-1,1v6c0,7.72-6.28,14-14,14s-14-6.28-14-14v-6c0-0.553-0.448-1-1-1s-1,0.447-1,1v6   c0,8.485,6.644,15.429,15,15.949V56h-5c-0.552,0-1,0.447-1,1s0.448,1,1,1h12c0.552,0,1-0.447,1-1s-0.448-1-1-1h-5v-5.051   c8.356-0.52,15-7.465,15-15.949v-6C45,28.447,44.552,28,44,28z"/>
+                        <path d="M29,46c6.065,0,11-4.935,11-11V11c0-6.065-4.935-11-11-11S18,4.935,18,11v24C18,41.065,22.935,46,29,46z M20,11   c0-4.963,4.038-9,9-9s9,4.037,9,9v24c0,4.963-4.038,9-9,9s-9-4.037-9-9V11z"/>
+                    </g>
+                </svg>
+            </span>
+        </fieldset>
 
-            mediaRecorder.addEventListener("dataavailable", event => {
-              audioChunks.push(event.data);
-            });
+        <p id="recording-instructions"></p>
 
-            const start = () => mediaRecorder.start();
-
-            const stop = () =>
-              new Promise(resolve => {
-                mediaRecorder.addEventListener("stop", () => {
-                  const audioBlob = new Blob(audioChunks);
-                  const audioUrl = URL.createObjectURL(audioBlob);
-                  const audio = new Audio(audioUrl);
-                  const play = () => audio.play();
-                  resolve({ audioBlob, audioUrl, play });
-                });
-
-                mediaRecorder.stop();
-              });
-
-            resolve({ start, stop });
-          });
-
-        const sleep = time => new Promise(resolve => setTimeout(resolve, time));
-
-        (async () => {
-          const recorder = await recordAudio();
-          recorder.start();
-          await sleep(3000);
-          const audio = await recorder.stop();
-          audio.play();
-        })();
-      </script> -->
-      <!-- <script>
-        var recorder = document.getElementById('recorder');
-        var player = document.getElementById('player');
-
-        recorder.addEventListener('change', function(e) {
-          var file = e.target.files[0]; 
-          // Do something with the audio file.
-          player.src =  URL.createObjectURL(file);
-        });
-      </script> -->
-<!--       <input style="message" type="text" class="form-control speech-input" name="messgae" id="inputMessage" placeholder="search" data-ready="Habla ahora" data-buttonsize="20" data-instant-submit required autofocus> -->
-      <!--  lang="zh-CN" -->
-      <button class="btn btn-lg btn-primary btn-block" id = "submit" type="submit">search</button>
+        <button class="btn btn-lg btn-primary btn-block" id = "submit" type="submit">search</button>
     </form>
-<!--     <form class = "back" id = "deny" onsubmit="denyClick()">
-      <button class="btn btn-danger btn-primary btn-lg" id = "deny" type="submit">Deny</button>
-    </form> -->
+
+
+
     <script>
       const form = document.getElementById('inputForm');
       form.addEventListener('submit', logSubmit);
@@ -208,6 +121,7 @@
         event.preventDefault();
       }
     </script>
+
     <script>
       const pic = document.getElementById('inputPicture');
       pic.addEventListener('submit', logSubmit);
@@ -216,16 +130,11 @@
         event.preventDefault();
       }
     </script>
-<!--     <script>
-      const denyForm = document.getElementById('deny');
-      denyForm.addEventListener('submit', logSubmit);
 
-      function logSubmit(event) {
-        event.preventDefault();
-      }
-    </script> -->
-<!--     <form role="form" class="copy-right"> -->
-        <p class="mt-5 mb-3 text-muted">&copy; Cloud Computing</p>
-<!--     </form> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+
+    <p class="mt-5 mb-3 text-muted">&copy; Cloud Computing</p>
+
   </body>
 </html>
